@@ -135,10 +135,10 @@ pwd
 
 docker run -e MAVEN_OPTS="-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled" --rm -v "${PWD}":/usr/src/mymaven -v "${PWD}/m2":/root/.m2 -w /usr/src/mymaven maven:alpine mvn clean install
 exitAfterFailure
-exit 1
+
 echo "Uploading core Jar to s3"
 
-# docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION -e AWS_PROFILE -v "${PWD}":/data -v "${HOME}/.aws":"/root/.aws" garland/aws-cli-docker aws s3 cp /data/target/DataMigrationFramework-1.0-SNAPSHOT-jar-with-dependencies.jar "$jar_file_path"
+docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION -e AWS_PROFILE -v "${PWD}":/data -v "${HOME}/.aws":"/root/.aws" garland/aws-cli-docker aws s3 cp /data/target/DataMigrationFramework-1.0-SNAPSHOT-jar-with-dependencies.jar "$jar_file_path"
 
 exitAfterFailure
 
@@ -147,7 +147,7 @@ cd ../api/
 
 echo "Uploading API docker image to ECR $docker_image_name"
 
-# docker run -e MAVEN_OPTS="-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled" --rm -v "${PWD}":/usr/src/mymaven -v "${PWD}/m2":/root/.m2 -w /usr/src/mymaven maven:alpine mvn clean install
+docker run -e MAVEN_OPTS="-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled" --rm -v "${PWD}":/usr/src/mymaven -v "${PWD}/m2":/root/.m2 -w /usr/src/mymaven maven:alpine mvn clean install
 
 exitAfterFailure
 ENV TZ=America/Los_Angeles
@@ -159,11 +159,11 @@ cd terraform/datapull_task
 
 echo "deleting repo =>"
 #
-# docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION -e AWS_PROFILE -v "${HOME}/.aws":"/root/.aws" garland/aws-cli-docker aws ecr delete-repository --repository-name "$docker_image_name"
+docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION -e AWS_PROFILE -v "${HOME}/.aws":"/root/.aws" garland/aws-cli-docker aws ecr delete-repository --repository-name "$docker_image_name"
 #
 echo "creating repo =>"
 #
-# docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION -e AWS_PROFILE -v "${HOME}/.aws":"/root/.aws" garland/aws-cli-docker aws ecr create-repository --repository-name "$docker_image_name"
+docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION -e AWS_PROFILE -v "${HOME}/.aws":"/root/.aws" garland/aws-cli-docker aws ecr create-repository --repository-name "$docker_image_name"
 #
 #
 echo "login into repo =>"
@@ -176,7 +176,7 @@ docker tag "${docker_image_name}":latest "${aws_account_number}".dkr.ecr."${aws_
 
 echo "pushing image into repo =>"
 
-# docker push "${aws_account_number}".dkr.ecr."${aws_repo_region}".amazonaws.com/"${docker_image_name}":latest
+docker push "${aws_account_number}".dkr.ecr."${aws_repo_region}".amazonaws.com/"${docker_image_name}":latest
 
 exitAfterFailure
 
