@@ -217,6 +217,24 @@ resource "aws_iam_policy" "datapull_passrole_policy" {
 EOF
 }
 
+resource "aws_iam_policy" "datapull_ses_policy" {
+  name = "datapull_emr_policy"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "ses:SendEmail",
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}
+
 resource "aws_iam_user_policy_attachment" "datapull_passrole_policy" {
   user = aws_iam_user.datapull_user.name
   policy_arn = aws_iam_policy.datapull_passrole_policy.arn
@@ -486,6 +504,11 @@ resource "aws_iam_role_policy_attachment" "datapull_emr_ec2_attachment" {
 resource "aws_iam_role_policy_attachment" "datapull_emr_cloudwatch_attachment" {
   role = aws_iam_role.emr_ec2_datapull_role.name
   policy_arn = aws_iam_policy.datapull_cloudwatch_logs_policy.arn
+}
+
+resource "aws_iam_user_policy_attachment" "datapull_ses_policy_attachment" {
+  user = aws_iam_user.emr_ec2_datapull_role.name
+  policy_arn = aws_iam_policy.datapull_ses_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "datapull_task_execution_policy" {

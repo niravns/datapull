@@ -44,7 +44,7 @@ datapull:
       Platform: EMRPipeline
   logger:
     cloudwatch:
-      groupName: /ecs/datatools-datapull-api
+      groupName: /ecs/datapull-web-api
       streamName: datapull-stream
     mssql:
       server:
